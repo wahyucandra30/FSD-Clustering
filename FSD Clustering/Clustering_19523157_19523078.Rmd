@@ -24,7 +24,7 @@ library(NbClust)
 ```
 ## Import data
 ```{r}
-crimeData <- read.csv("SwedishCrimeRate.csv", row.names = 1)
+crimeData <- read.csv("SwedishCrimeRate.csv")
 datatable(crimeData, options = list(autoWidth=TRUE, scrollX=300))
 ```
 
@@ -35,14 +35,14 @@ summary(crimeData)
 ```
 ## Membuat data frame
 ```{r}
-df <- data.frame(rownames(crimeData),crimeData)
+df <- data.frame(crimeData)
 ```
 
 ##  Visualisasi total tindak kriminal berdasar tahun
 ```{r}
 par(las=2)
 par(mar=c(5,8,4,2)) # increase y-axis margin.
-barplot(df$crimes.total, names.arg = rownames(df), horiz = TRUE, cex.names = 0.5,
+barplot(df$crimes.total, names.arg = df$Year, horiz = TRUE, cex.names = 0.5,
         xlab="Crimes Total", ylab="Years Committed")
 ```
 
@@ -54,10 +54,11 @@ barplot(df$crimes.total, names.arg = rownames(df), horiz = TRUE, cex.names = 0.5
 
 ## Complete Linkage
 ```{r}
-d <- dist(scale(df[,2:21]), method = "euclidean")
+row.names(df) <- df[,1]
+d <- dist(scale(df), method = "euclidean")
 clusters <- hclust(d, method = "complete" )
 plot(clusters, cex = 0.5, hang = -1, xlab="Years Comitted")
-rect.hclust(clusters, k=2, border= 2:21) #Jumlah kluster = 2
+rect.hclust(clusters, k=2, border= 1:21) #Jumlah kluster = 2
 ```
 T## Average Method
 ```{r}
@@ -65,3 +66,5 @@ avgClusters <- hclust(d, method = "average" )
 plot(avgClusters, cex = 0.5, hang = -1, xlab="Years Comitted")
 rect.hclust(avgClusters, k=3, border= 2:21) #Jumlah kluster = 3
 ```
+
+
