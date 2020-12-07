@@ -60,7 +60,7 @@ clusters <- hclust(d, method = "complete" )
 plot(clusters, cex = 0.5, hang = -1, xlab="Years Comitted")
 rect.hclust(clusters, k=2, border= 1:21) #Jumlah kluster = 2
 ```
-T## Average Method
+## Average Method
 ```{r}
 avgClusters <- hclust(d, method = "average" )
 plot(avgClusters, cex = 0.5, hang = -1, xlab="Years Comitted")
