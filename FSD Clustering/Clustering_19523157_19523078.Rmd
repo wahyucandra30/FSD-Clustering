@@ -21,6 +21,8 @@ library(dplyr)
 library(tidyr)
 library(factoextra)
 library(NbClust)
+library(fpc)
+library(dbscan)
 ```
 ## Import data
 ```{r}
@@ -60,6 +62,7 @@ clusters <- hclust(d, method = "complete" )
 plot(clusters, cex = 0.5, hang = -1, xlab="Years Comitted")
 rect.hclust(clusters, k=2, border= 1:21) #Jumlah kluster = 2
 ```
+
 ## Average Method
 ```{r}
 avgClusters <- hclust(d, method = "average" )
@@ -67,4 +70,41 @@ plot(avgClusters, cex = 0.5, hang = -1, xlab="Years Comitted")
 rect.hclust(avgClusters, k=3, border= 2:21) #Jumlah kluster = 3
 ```
 
+# DBSCAN
+## Plot antara data kolom sexual offenses dan kolom rape
+```{r}
+df1 <- crimeData[,c(7,8)]
+plot(df1, pch=16, xlab="Sexual Offenses", ylab="Rape")
+```
 
+Jika diterawang dengan intuisi terdapat sekitar 4 kluster.
+
+## Mencoba menggunakan K-Means
+```{r}
+set.seed(123)
+km.res <- kmeans(df1, 4, nstart = 25)
+fviz_cluster(km.res, df1, ellipse = FALSE, geom = "point", xlab="Sexual Offenses", ylab="Rape")
+```
+
+## Mencari nilai epsilon ϵ optimal
+Menggunakan fungsi kNNdistplot()
+```{r}
+kNNdistplot(df1, k =  4)
+abline(h = 0.15, lty = 2)
+```
+
+Dapat dilihat ϵ-nya sekitar 10
+
+## Menggunakan fungsi dbscan()
+Menggunakan fungsi dbscan() dengan parameter ϵ=10 dan minPts=4.
+
+```{r warning=FALSE}
+set.seed(123)
+db <- dbscan(df1, eps = 10, MinPts = 4)
+plot(db, df1, main = "DBSCAN" , frame= FALSE, xlab="Sexual Offenses", ylab="Rape")
+```
+
+## Menggunakan fungsi plot dari factoexra
+```{r}
+fviz_cluster(db, df1, stand = FALSE, ellipse = FALSE, geom = "point", xlab="Sexual Offenses", ylab="Rape")
+```
