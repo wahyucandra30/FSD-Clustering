@@ -47,6 +47,8 @@ par(mar=c(5,8,4,2)) # increase y-axis margin.
 barplot(df$crimes.total, names.arg = df$Year, horiz = TRUE, cex.names = 0.5,
         xlab="Crimes Total", ylab="Years Committed")
 ```
+
+
 # K-Means Clustering
 ### Melakukan clustering menggunakan K-Means pada data set Swedish Crime Rates
 ```{r}
