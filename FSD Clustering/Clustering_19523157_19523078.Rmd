@@ -47,6 +47,39 @@ par(mar=c(5,8,4,2)) # increase y-axis margin.
 barplot(df$crimes.total, names.arg = df$Year, horiz = TRUE, cex.names = 0.5,
         xlab="Crimes Total", ylab="Years Committed")
 ```
+# K-Means Clustering
+### Melakukan clustering menggunakan K-Means pada data set Swedish Crime Rates
+```{r}
+crimeData.new <- crimeData[, 1:7]
+crimeData.class <- crimeData[, "crimes.penal.code"]
+set.seed(125)
+result <- kmeans(crimeData.new, 3)
+```
+
+### Membagi ruang plot menjadi 2 baris dan 2 kolom dengan parameter mfrow=c(2,2) dan  mengatur ukuran margin dari plot dengan parameter mar=c(5,4,2,2)
+```{r}
+par(mfrow=c(2,2), mar=c(5,4,2,2))
+plot(crimeData.new[, c(2,1)], xlab = "Total Crime", ylab = "Year", col=result$cluster)
+plot(crimeData.new[, c(2,1)], xlab = "Total Crime", ylab = "Year", col=crimeData.class)
+plot(crimeData.new[, c(2,6)], xlab = "Total Crime", ylab = "Assault", col=result$cluster)
+plot(crimeData.new[, c(2,6)], xlab = "Total Crime", ylab = "Assault", col=crimeData.class)
+```
+
+### Melihat nilai distortion pada iterasi terakhir melalui tot.withinss.
+```{r}
+result$tot.withinss
+```
+
+### Menggunakan ggplot2 untuk mempresentasikan hasil clustering
+```{r}
+crimeData.new$cluster <- factor(result$cluster)
+centers <- as.data.frame(result$centers)
+library(ggplot2)
+ggplot() + 
+  geom_point(data=crimeData.new, aes(x=crimes.total, y=Year,color=cluster))  +
+  geom_point(data=centers, aes(x=crimes.total, y=Year, color="Center"), 
+             size=52, alpha=.3, show.legend = FALSE)
+```
 
 # Hierarchical Clustering
 ## Cluster Dendogram
