@@ -1,5 +1,5 @@
 ---
-title: "Pokemon Matchup Dataset Clustering"
+title: "Swedish Crime Rate Data Clustering"
 author: "Wahyu & Suryo"
 date: "12/7/2020"
 output: html_document
@@ -10,19 +10,58 @@ knitr::opts_chunk$set(echo = TRUE, comment=NA)
 
 ```
 
-# Pokemon Stats Dataset Clustering
+# Swedish Crime Rate Data Clustering
 
-## Import libraries
-```{r libraries}
+## Libraries yang digunakan
+```{r message=FALSE, warning=FALSE}
 
 library(datasets)
+library(DT)
+library(dplyr)
+library(tidyr)
+library(factoextra)
+library(NbClust)
 ```
 ## Import data
-```{r importdata}
-pokedata <- read.csv("PokemonStats.csv", TRUE)
+```{r}
+crimeData <- read.csv("SwedishCrimeRate.csv", row.names = 1)
+datatable(crimeData, options = list(autoWidth=TRUE, scrollX=300))
 ```
+
+
 ## Summary data
-```{r summary}
-cols <- c("HP","Attack","Defense","Sp..Atk","Sp..Def","Speed","Generation");
-summary(pokedata[cols])
+```{r}
+summary(crimeData)
+```
+## Membuat data frame
+```{r}
+df <- data.frame(rownames(crimeData),crimeData)
+```
+
+##  Visualisasi total tindak kriminal berdasar tahun
+```{r}
+par(las=2)
+par(mar=c(5,8,4,2)) # increase y-axis margin.
+barplot(df$crimes.total, names.arg = rownames(df), horiz = TRUE, cex.names = 0.5,
+        xlab="Crimes Total", ylab="Years Committed")
+```
+
+# Hierarchical Clustering
+## Cluster Dendogram
+#### Dengan menggunakan fungsi hclust() kita dapat men-generate cluster dendogram
+#### berdasarkan variabel d yaitu perhitungan jarak. Untuk menentukan jumlah kluster
+#### yang sesuai, dapat dilihat dari jarak ketinggian terbesar di dendogram.
+
+## Complete Linkage
+```{r}
+d <- dist(scale(df[,2:21]), method = "euclidean")
+clusters <- hclust(d, method = "complete" )
+plot(clusters, cex = 0.5, hang = -1, xlab="Years Comitted")
+rect.hclust(clusters, k=2, border= 2:21) #Jumlah kluster = 2
+```
+T## Average Method
+```{r}
+avgClusters <- hclust(d, method = "average" )
+plot(avgClusters, cex = 0.5, hang = -1, xlab="Years Comitted")
+rect.hclust(avgClusters, k=3, border= 2:21) #Jumlah kluster = 3
 ```
